@@ -1,40 +1,40 @@
 let posts = [
   {
     id: "1",
-    name: "김사과",
-    userid: "apple",
+    user_name: "김사과",
+    user_id: "apple",
     text: "Node.js 배우는 중인데 Express 진짜 편하다! 🚀",
     createdAt: Date.now().toString(),
     url: "https://randomuser.me/api/portraits/women/32.jpg",
   },
   {
     id: "2",
-    name: "반하나",
-    userid: "banana",
+    user_name: "반하나",
+    user_id: "banana",
     text: "오늘의 커피 ☕️ + 코딩 = 최고의 조합!",
     createdAt: Date.now().toString(),
     url: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     id: "3",
-    name: "오렌지",
-    userid: "orange",
+    user_name: "오렌지",
+    user_id: "orange",
     text: "Elasticsearch 연동 완료! 실시간 검색 API 짜릿해 🔍",
     createdAt: Date.now().toString(),
     url: "https://randomuser.me/api/portraits/men/11.jpg",
   },
   {
     id: "4",
-    name: "배애리",
-    userid: "berry",
+    user_name: "배애리",
+    user_id: "berry",
     text: "JavaScript 비동기 너무 어렵다... Promises, async/await, 뭐가 뭔지 😭",
     createdAt: Date.now().toString(),
     url: "https://randomuser.me/api/portraits/women/52.jpg",
   },
   {
     id: "5",
-    name: "이메론",
-    userid: "melon",
+    user_name: "이메론",
+    user_id: "melon",
     text: "새 프로젝트 시작! Express + MongoDB + EJS 조합 좋아요 💡",
     createdAt: Date.now().toString(),
     url: "https://randomuser.me/api/portraits/men/29.jpg",
@@ -48,8 +48,8 @@ export async function getAll() {
 
 // 사용자 아이디(userid)에 대한 포스트를 리턴
 // 조건을 만족하는 모든 요소를 배열로 리턴
-export async function getAllByUserid(userid) {
-  return posts.filter((post) => post.userid === userid);
+export async function getAllByUserid(user_id) {
+  return posts.filter((post) => post.user_id === user_id);
 }
 
 // 글 번호(id)에 대한 포스트를 리턴
@@ -59,11 +59,11 @@ export async function getById(id) {
 }
 
 // 포스트 작성
-export async function create(userid, name, text) {
+export async function create(user_id, user_name, text) {
   const post = {
     id: Date.now().toString(),
-    userid,
-    name,
+    user_id,
+    user_name,
     text,
     createdAt: Date.now().toString(),
   };

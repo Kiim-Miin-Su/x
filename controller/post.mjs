@@ -2,7 +2,7 @@ import * as postRepository from "../data/post.mjs";
 
 // 모든 포스트 / 해당 아이디에 대한 포스트를 가져오는 함수
 export async function getPosts(req, res, next) {
-  const userid = req.query.userid;
+  const userid = req.query.user_id;
   const data = await (userid
     ? postRepository.getAllByUserid(userid)
     : postRepository.getAll());
@@ -22,8 +22,8 @@ export async function getPost(req, res, next) {
 
 // 포스트를 생성하는 함수
 export async function createPost(req, res, next) {
-  const { userid, name, text } = req.body;
-  const posts = await postRepository.create(userid, name, text);
+  const { user_id, user_name, text } = req.body;
+  const posts = await postRepository.create(user_id, user_name, text);
   res.status(201).json(posts);
 }
 
