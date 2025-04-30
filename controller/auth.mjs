@@ -12,36 +12,36 @@ async function createJwtToken(id) {
 }
 
 export async function signup(req, res, next) {
-  const { userid, password, name, email } = req.body;
+  const { user_id, user_pw, user_name, user_email } = req.body;
 
   // 회원 중복 체크
-  const found = await authRepository.findByUserid(userid);
+  const found = await authRepository.findByUserid(user_id);
   if (found) {
-    return res.status(409).json({ message: `${userid}이 이미 있습니다.` });
+    return res.status(409).json({ message: `${user_id}이 이미 있습니다.` });
   }
 
-  const hashed = bcrypt.hashSync(password, bcryptSaltRounds);
-  const users = await authRepository.createUser(userid, hashed, name, email);
+  const hashed = bcrypt.hashSync(user_pw, bcryptSaltRounds);
+  const users = await authRepository.createUser(user_id, hashed, user_name, user_email);
   const token = await createJwtToken(users.id);
   console.log(token);
   if (users) {
-    res.status(201).json({ token, userid });
+    res.status(201).json({ token, user_id });
   }
 }
 
 export async function login(req, res, next) {
-  const { userid, password } = req.body;
-  const user = await authRepository.findByUserid(userid);
+  const { user_id, user_pw } = req.body;
+  const user = await authRepository.findByUserid(user_id);
   if (!user) {
-    res.status(401).json(`${userid} 아이디를 찾을 수 없음`);
+    res.status(401).json(`${user_id} 아이디를 찾을 수 없음`);
   }
-  const isValidPassword = await bcrypt.compare(password, user.password);
+  const isValidPassword = await bcrypt.compare(user_pw, user.user_pw);
   if (!isValidPassword) {
     return res.status(401).json({ message: "아이디 또는 비밀번호 확인" });
   }
 
   const token = await createJwtToken(user.id);
-  res.status(200).json({ token, userid });
+  res.status(200).json({ token, user_id });
 }
 
 export async function verify(req, res, next) {
@@ -58,5 +58,5 @@ export async function me(req, res, next) {
   if (!user) {
     return res.status(404).json({ message: "일치하는 사용자가 없음" });
   }
-  res.status(200).json({ token: req.token, userid: user.userid });
+  res.status(200).json({ token: req.token, user_id: user.user_id });
 }
