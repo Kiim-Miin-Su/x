@@ -12,7 +12,7 @@ async function createJwtToken(id) {
 }
 
 export async function signup(req, res, next) {
-  const { user_id, user_pw, user_name, user_email } = req.body;
+  const { user_id, user_pw, user_name, user_email, user_phone, user_address1, user_address2, user_birth, user_gender } = req.body;
 
   // 회원 중복 체크
   const found = await authRepository.findByUserid(user_id);
@@ -21,7 +21,7 @@ export async function signup(req, res, next) {
   }
 
   const hashed = bcrypt.hashSync(user_pw, bcryptSaltRounds);
-  const users = await authRepository.createUser(user_id, hashed, user_name, user_email);
+  const users = await authRepository.createUser(user_id, hashed, user_name, user_email, user_phone, user_address1, user_address2, user_birth, user_gender);
   const token = await createJwtToken(users.id);
   console.log(token);
   if (users) {
