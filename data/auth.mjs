@@ -1,70 +1,43 @@
-let users = [
-  {
-    id: "1",
-    userid: "apple",
-    password: "1111",
-    name: "김사과",
-    email: "apple@apple.com",
-    url: "https://randomuser.me/api/portraits/women/32.jpg",
-  },
-  {
-    id: "2",
-    userid: "banana",
-    password: "2222",
-    name: "반하나",
-    email: "banana@banana.com",
-    url: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: "3",
-    userid: "orange",
-    password: "3333",
-    name: "오렌지",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/11.jpg",
-  },
-  {
-    id: "4",
-    userid: "berry",
-    password: "4444",
-    name: "배애리",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/women/52.jpg",
-  },
-  {
-    id: "5",
-    userid: "melon",
-    password: "5555",
-    name: "이메론",
-    email: "orange@orange.com",
-    url: "https://randomuser.me/api/portraits/men/29.jpg",
-  },
-];
+import { db } from "../db/database.mjs"; // promise를 반환 한다는게 무슨 뜻이야 도대체...?
+import { config } from "../config.mjs";
+import bcrypt from "bcrypt";
 
-export async function createUser(userid, password, name, email) {
-  const user = {
-    id: Date.now().toString(),
-    userid,
-    password,
-    name,
-    email,
-    url: "https://randomuser.me/api/portraits/men/29.jpg",
-  };
-  users = [user, ...users];
-  return users;
+const users = [];
+
+
+export async function createUser(user_id, hashed_pw, name, email, url) {
+    return await db.execute( // 객체로 반환되는거야?
+        "INSERT INTO users (user_id, user_pw, name, email, url) VALUES (?, ?, ?, ?, ?)",
+        [user_id, hashed_pw, name, email, url]
+    ).then((result) => result[0].insertId);
 }
 
-export async function login(userid, password) {
-  const user = users.find(
-    (user) => user.userid === userid && user.password === password
-  );
-  return user;
+export async function login(input_id, input_pw) {
+    const [user] = await db.execute(
+        "SELECT * FROM users WHERE user_id = ?",
+        [input_id]
+    );
+    if (!user) {
+        throw new Error("존재하지 않는 아이디입니다.");
+    }
+    if (!bcrypt.compareSync(input_pw, user.user_pw)) {
+        throw new Error("비밀번호가 일치하지 않습니다.");
+    }
+    return user;
 }
 
-export async function findByUserid(userid) {
-  return users.find((user) => user.userid === userid);
+export async function findByUserid(input_id) {
+    return await db
+        .execute(
+            "select * from users where user_id = ?", [input_id])
+        .then((result) => result[0][0]);
 }
 
-export async function findByid(id) {
-  return users.find((user) => user.id === id);
+export async function findByid(idx) {
+    return await db
+        .execute(
+            "select * from users where idx = ?", [idx]
+        )
+        .then((result) => result[0][0]);
 }
+

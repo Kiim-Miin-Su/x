@@ -6,13 +6,13 @@ import { validate } from "../middleware/validator.mjs";
 const router = express.Router();
 
 const validateLogin = [
-  body("userid")
+  body("input_id")
     .trim()
     .isLength({ min: 4 })
     .withMessage("최소 4자이상 입력")
     .matches(/^[a-zA-Z0-9]*$/)
     .withMessage("특수문자는 사용불가"),
-  body("password").trim().isLength({ min: 8 }).withMessage("최소 8자이상 입력"),
+  body("input_pw").trim().isLength({ min: 8 }).withMessage("최소 8자이상 입력"),
   validate,
 ];
 
